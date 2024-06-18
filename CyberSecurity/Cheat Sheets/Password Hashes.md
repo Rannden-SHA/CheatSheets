@@ -8,7 +8,7 @@ Propietario: Adrian Gisbert Cabello
 
 - El hash va a tener un prefix (con el símbolo del dolar) que significa que tipo de hash es
 
-![Untitled](Password%20Hashes%20aa37e1b128b34498862ad4f980e1f708/Untitled.png)
+![Untitled](Password%20Hashes/Untitled.png)
 
 - También podemos dumpear los hashes de las contraseñas si tenemos una sesión de meterpreter con metasploit:
     - `search hashdump` | `use post/linux/gather/hashdump`
@@ -25,7 +25,7 @@ Los hashes LM suelen venir en 2 hashes (HASH1:HASH2) mientras que los hashes NTL
 
 En una consola meterpreter podemos buscar los archivos: `search -f Unattend.xml` o bien entrando el el directorio con `cd`, descargamos el archivo a nuestro equipo con `download` y lo visualizamos
 
-![Untitled](Password%20Hashes%20aa37e1b128b34498862ad4f980e1f708/Untitled%201.png)
+![Untitled](Password%20Hashes/Untitled%201.png)
 
 - En este caso está encodeado en base64 porque la opción de `Plain text` está en `false`.
 
