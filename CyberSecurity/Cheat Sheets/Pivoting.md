@@ -126,4 +126,4 @@ Para listar los puertos que hemos hecho port_forwarding:		**`*portfwd list*`**
 
 Ahora podemos hacer un escaneo en nmap desde el terminal al puerto que hemos añadido:		**`*nmap -p2233 localhost*`**	o 	un escaneo más exaustivo	**`*nmap -sSCV -p2233 localhost*`**
 
-[Little Pivoting Example](Pivoting%204774fa8d403845fb869daeb9854c3f03/Little%20Pivoting%20Example%20aa3eba8138ba49edb888e28dcf5816fb.md)
+[Little Pivoting Example](Pivoting/Little%20Pivoting%20Example.md)
