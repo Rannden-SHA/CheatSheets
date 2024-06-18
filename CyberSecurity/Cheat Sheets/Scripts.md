@@ -47,4 +47,4 @@ done; wait
 for /L %i in (1,1,255) do @ping -n 1 -w 200 10.185.11.%i > nul && echo 10.185.11.%i is up.
 ```
 
-[Bash Scripting](Scripts%20fcd4141083cd44b885f177385687c506/Bash%20Scripting%2015ebd5df02694f6caa34a249e621346b.md)
+[Bash Scripting](Scripts/Bash%20Scripting.md)
