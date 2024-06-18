@@ -1,6 +1,7 @@
 # OSCP Technical Guide
 
-Propietario: Adrian Gisbert Cabello
+Propietario: Leonardo Tamiano
+https://blog.leonardotamiano.xyz/tech/oscp-technical-guide/
 
 ---
 
