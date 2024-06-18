@@ -85,6 +85,6 @@ Exploit para webdav:
 
 Especificar HttpPassword y HttpUsername del webdav server
 
-[Meterpreter](Metasploit%208f767f4ca730444a8b8922b0263baef1/Meterpreter%203147b7c940a448a499a91d9abe6faf80.md)
+[Meterpreter](Metasploit/Meterpreter.md)
 
-[Msfvenom](Metasploit%208f767f4ca730444a8b8922b0263baef1/Msfvenom%2004d305aac65f49f2b66c33cf3de953f5.md)
+[Msfvenom](Metasploit/Msfvenom.md)
