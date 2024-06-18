@@ -32,7 +32,7 @@ Con tr ‘ ‘ ‘***,’***  cambiaremos todos los carácteres que sean un espa
 
 [Metasploit](Herramientas%20y%20Comandos/Metasploit.md)
 
-[Hashes y Desencriptación](Herramientas%20y%20Comandos/Hashes%20y%20Desencriptacio%CC%81n.md)
+[Hashes y Desencriptación](https://github.com/Rannden-SHA/CheatSheets/blob/main/CyberSecurity/Cheat%20Sheets/Herramientas%20y%20Comandos/Hashes%20y%20Desencriptacio%CC%81n.md)
 
 [Tratamiento de la TTY](Herramientas%20y%20Comandos/Tratamiento%20de%20la%20TTY.md)
 
