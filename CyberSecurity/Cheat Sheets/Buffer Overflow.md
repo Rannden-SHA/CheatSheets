@@ -8,9 +8,9 @@ Explicación video Jackie0x17 con y sin badchars y además cómo recibimos la re
 
 [https://www.youtube.com/watch?v=K_1mfOzj2wg&t=1471s&ab_channel=Jackie0x17](https://www.youtube.com/watch?v=K_1mfOzj2wg&t=1471s&ab_channel=Jackie0x17)
 
-![Untitled](Buffer%20Overflow%203059001c79d047a2a3820f32ebfa89b3/Untitled.png)
+![Untitled](Buffer%20Overflow/Untitled.png)
 
-![Untitled](Buffer%20Overflow%203059001c79d047a2a3820f32ebfa89b3/Untitled%201.png)
+![Untitled](Buffer%20Overflow/Untitled%201.png)
 
 La máquina Windows 10 que arranquemos en virtual box tiene que tener adaptador puente (igual que la máquina Kali Linux)
 
@@ -264,4 +264,4 @@ Recibimos la reverseshell
 
 Si no tenemos conexión directa y está a través de máquinas intermedias:
 
-![Untitled](Buffer%20Overflow%203059001c79d047a2a3820f32ebfa89b3/Untitled%202.png)
+![Untitled](Buffer%20Overflow/Untitled%202.png)
