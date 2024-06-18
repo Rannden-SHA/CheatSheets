@@ -18,38 +18,38 @@ Propietario: Adrian Gisbert Cabello
     - Con ***xargs*** en vez de verlo en formato de columna, lo veremos en formato de una linea.
     - Con tr ‘ ‘ ***‘,’***  cambiaremos todos los carácteres que sean un espacio por una coma.
 
-[Offensive Security](Cheat%20Sheets%/Offensive%20Security.md)
+[Offensive Security](Cheat%20Sheets/Offensive%20Security.md)
 
-[Enumeration](Cheat%20Sheets%/Enumeration.md)
+[Enumeration](Cheat%20Sheets/Enumeration.md)
 
-[SQL Injections](Cheat%20Sheets%/SQL%20Injections.md)
+[SQL Injections](Cheat%20Sheets/SQL%20Injections.md)
 
-[Pivoting](Cheat%20Sheets%/Pivoting.md)
+[Pivoting](Cheat%20Sheets/Pivoting.md)
 
-[Password Hashes](Cheat%20Sheets%/Password%20Hashes.md)
+[Password Hashes](Cheat%20Sheets/Password%20Hashes.md)
 
-[Buffer Overflow](Cheat%20Sheets%/Buffer%20Overflow.md)
+[Buffer Overflow](Cheat%20Sheets/Buffer%20Overflow.md)
 
-[Privilege Escalation](Cheat%20Sheets%/Privilege%20Escalation.md)
+[Privilege Escalation](Cheat%20Sheets/Privilege%20Escalation.md)
 
-[Puertos y Protocolos](Cheat%20Sheets%/Puertos%20y%20Protocolos.md)
+[Puertos y Protocolos](Cheat%20Sheets/Puertos%20y%20Protocolos.md)
 
-[Herramientas y Comandos](Cheat%20Sheets%/Herramientas%20y%20Comandos.md)
+[Herramientas y Comandos](Cheat%20Sheets/Herramientas%20y%20Comandos.md)
 
-[File Transfers](Cheat%20Sheets%/File%20Transfers.md)
+[File Transfers](Cheat%20Sheets/File%20Transfers.md)
 
-[Diccionarios](Cheat%20Sheets%/Diccionarios.md)
+[Diccionarios](Cheat%20Sheets/Diccionarios.md)
 
-[CMS](Cheat%20Sheets%/CMS.md)
+[CMS](Cheat%20Sheets/CMS.md)
 
-[Vulnerabilidades](Cheat%20Sheets%/Vulnerabilidades.md)
+[Vulnerabilidades](Cheat%20Sheets/Vulnerabilidades.md)
 
-[Reverse Shells](Cheat%20Sheets%/Reverse%20Shells.md)
+[Reverse Shells](Cheat%20Sheets/Reverse%20Shells.md)
 
-[Scripts](Cheat%20Sheets%/Scripts.md)
+[Scripts](Cheat%20Sheets/Scripts.md)
 
-[Information Gathering](Cheat%20Sheets%/Information%20Gathering.md)
+[Information Gathering](Cheat%20Sheets/Information%20Gathering.md)
 
-[Antivirus Evasion](Cheat%20Sheets%/Antivirus%20Evasion.md)
+[Antivirus Evasion](Cheat%20Sheets/Antivirus%20Evasion.md)
 
-[Powershell Empire](Cheat%20Sheets%/Powershell%20Empire%2059d14ea7209e4d378d82322f1c33a434.md)
+[Powershell Empire](Cheat%20Sheets/Powershell%20Empire%2059d14ea7209e4d378d82322f1c33a434.md)
