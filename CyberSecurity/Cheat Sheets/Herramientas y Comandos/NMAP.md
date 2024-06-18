@@ -8,11 +8,11 @@ También podemos usar netdiscovery:
 
 Primer escaneo cuando obtenemos una o más redes IP: `sudo nmap -sS --min-rate 5000 -p- --open 192.168.X.X,Y,Z -vvv -oN tcp_scan.txt`
 
-Se pueden añadir más de una IP si estan en el mismo rango con la ',' seguido de las terminaciones de las otras IP. El comando ***-sS*** es para enumerar servicios de los puertos que están corriendo, el ***min rate*** lo dejamos a 5000 para un escaneo más rápido (no aplicable en entornos reales y en escaneos que queramos que se hagan de una manera más silenciosa), el comando ***open*** para que nos muestre solo los puertos que estén abiertos y el parámetro ***oN*** es para guardar los resultados en un formato NMAP a un archivo .txt, triple verbose para ver el escaneo en tiempo real.
+Se pueden añadir más de una IP si estan en el mismo rango con la ***','*** seguido de las terminaciones de las otras IP. El comando ***-sS*** es para enumerar servicios de los puertos que están corriendo, el ***min rate*** lo dejamos a 5000 para un escaneo más rápido (no aplicable en entornos reales y en escaneos que queramos que se hagan de una manera más silenciosa), el comando ***open*** para que nos muestre solo los puertos que estén abiertos y el parámetro ***oN*** es para guardar los resultados en un formato NMAP a un archivo .txt, triple verbose para ver el escaneo en tiempo real.
 
-Segundo escaneo una vez ya sabemos los puertos abiertos:	`sudo nmap -p21,22,80,445 -sSCV --open 192.168.X.X,Y,Z -Pn -vvv -oN full_scan.txt`
+Segundo escaneo una vez ya sabemos los puertos abiertos: `sudo nmap -p21,22,80,445 -sSCV --open 192.168.X.X,Y,Z -Pn -vvv -oN full_scan.txt`
 
-Se pueden añadir más de un puerto separándolos con **la *‘**,***’ **. El comando ***-sCV*** nos permite enumerar versiones que están corriendo en los puertos, ***-Pn*** para que no haga resolución DNS y así ser más rápido. Triple verbose para ver el escaneo en tiempo real.
+Se pueden añadir más de un puerto separándolos con la ***','*** . El comando ***-sCV*** nos permite enumerar versiones que están corriendo en los puertos, ***-Pn*** para que no haga resolución DNS y así ser más rápido. Triple verbose para ver el escaneo en tiempo real.
 
 Scripts de NMAP para el puerto 445 (SMB):
 
