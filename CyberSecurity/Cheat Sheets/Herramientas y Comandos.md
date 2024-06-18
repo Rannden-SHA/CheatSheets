@@ -28,20 +28,20 @@ Con tr ‘ ‘ ‘***,’***  cambiaremos todos los carácteres que sean un espa
 
 - Para saber los privilegios de un usuario (por si tenemos la duda de si son el mismo usuario): `getprivs`
 
-[NMAP](Herramientas%20y%20Comandos%2043dec3ed70cd436b959b1d7c8a4066aa/NMAP%20bf7ba4a8bcd141aebe8d90ce2d09687e.md)
+[NMAP](Herramientas%20y%20Comandos/NMAP.md)
 
-[Metasploit](Herramientas%20y%20Comandos%2043dec3ed70cd436b959b1d7c8a4066aa/Metasploit%208f767f4ca730444a8b8922b0263baef1.md)
+[Metasploit](Herramientas%20y%20Comandos/Metasploit.md)
 
-[Hashes y Desencriptación](Herramientas%20y%20Comandos%2043dec3ed70cd436b959b1d7c8a4066aa/Hashes%20y%20Desencriptacio%CC%81n%2024f8e5e98a3549c390ddbc691890c372.md)
+[Hashes y Desencriptación](Herramientas%20y%20Comandos/Hashes%20y%20Desencriptacio%CC%81n.md)
 
-[Tratamiento de la TTY](Herramientas%20y%20Comandos%2043dec3ed70cd436b959b1d7c8a4066aa/Tratamiento%20de%20la%20TTY%2000409ac3213244199854bef2b7b37585.md)
+[Tratamiento de la TTY](Herramientas%20y%20Comandos/Tratamiento%20de%20la%20TTY.md)
 
-[Bases de Datos](Herramientas%20y%20Comandos%2043dec3ed70cd436b959b1d7c8a4066aa/Bases%20de%20Datos%20cf40196b1ba44dc283d882cd729e2c5e.md)
+[Bases de Datos](Herramientas%20y%20Comandos/Bases%20de%20Datos.md)
 
-[Hydra Fuerza Bruta](Herramientas%20y%20Comandos%2043dec3ed70cd436b959b1d7c8a4066aa/Hydra%20Fuerza%20Bruta%2022e000b587ab4f02b4e18de9622a95db.md)
+[Hydra Fuerza Bruta](Herramientas%20y%20Comandos/Hydra%20Fuerza%20Bruta.md)
 
-[Crackmapexec](Herramientas%20y%20Comandos%2043dec3ed70cd436b959b1d7c8a4066aa/Crackmapexec%20f47dd5aba832497a8ec94f5331e78a1e.md)
+[Crackmapexec](Herramientas%20y%20Comandos/Crackmapexec.md)
 
-[SMB Enum](Herramientas%20y%20Comandos%2043dec3ed70cd436b959b1d7c8a4066aa/SMB%20Enum%20714db793a28948419d42d53a6793622d.md)
+[SMB Enum](Herramientas%20y%20Comandos/SMB%20Enum.md)
 
-[HTTP](Herramientas%20y%20Comandos%2043dec3ed70cd436b959b1d7c8a4066aa/HTTP%20e63fc23db8204f569f8afa16d8beb7d8.md)
+[HTTP](Herramientas%20y%20Comandos/HTTP.md)
