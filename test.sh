@@ -1864,8 +1864,9 @@ post_exploitation() {
     echo -e "${BLUE}[+] Post-Exploitation Menu:${NC}"
     read -p "Enter the port to listen on: " listen_port
     echo -e "${BLUE}Setting up Netcat listener on port $listen_port...${NC}"
-    x-terminal-emulator -e "nc -lvnp $listen_port"
-    # Si no funciona poner este: xterm -hold -e "nc -lvnp $listen_port" &
+
+    # Run Netcat listener in the background
+    x-terminal-emulator -e "bash -c 'nc -lvnp $listen_port > /tmp/nc_output.txt & nc_pid=$!; echo $nc_pid > /tmp/nc_pid.txt'" &
 
     # Wait for the reverse shell connection to be established
     sleep 3
