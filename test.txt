@@ -1886,9 +1886,9 @@ post_exploitation() {
 
         # Capture the output from the reverse shell
         tmux capture-pane -t nc_listener -S -1000
-        tmux save-buffer -b nc_listener /tmp/tmux_buffer.txt
-        cat /tmp/tmux_buffer.txt
-        > /tmp/tmux_buffer.txt
+        tmux save-buffer -b nc_listener /$BASE_DIR/privesc/tmux_buffer.txt
+        cat /$BASE_DIR/privesc/tmux_buffer.txt
+        > /$BASE_DIR/privesc/tmux_buffer.txt
     done
 
     # Kill the tmux session after post-exploitation tasks are done
