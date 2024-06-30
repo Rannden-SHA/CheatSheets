@@ -2047,7 +2047,7 @@ post_exploitation() {
     # Create a new tmux session for the Netcat listener
     tmux new-session -d -s nc_listener "nc -lvnp $listen_port"
 
-    echo -e "${BLUE}Ejecute el comando para obtener la reverse shell... ${NC}"
+    echo -e "${BLUE}You can now run the reverse shell... ${NC}"
     echo -e "${YELLOW}[+] Select a post-exploitation option: ${NC}"
     read -e -p "Is the shell Linux or Windows? (l/w): " shell_type
     while true; do
@@ -2152,7 +2152,6 @@ post_exploitation() {
         tmux capture-pane -pt nc_listener -S -1000
         tmux show-buffer
         tmux delete-buffer
-        tmux send-keys -t nc_listener C-l  # Clear the terminal
     done
 
     # Kill the tmux session after post-exploitation tasks are done
@@ -2174,11 +2173,6 @@ send_command() {
     done
 
     echo -e "${GREEN}[+] Capturing output...${NC}"
-    # Capture and clear the tmux buffer
-    tmux capture-pane -pt nc_listener -S -1000
-    tmux show-buffer
-    tmux delete-buffer
-    tmux send-keys -t nc_listener C-l  # Clear the terminal
 }
 
 check_install_dependencies() {
