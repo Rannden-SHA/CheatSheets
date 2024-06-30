@@ -2149,10 +2149,10 @@ post_exploitation() {
         echo -e "============================ ${YELLOW}Used module: ($post_option) ${VIOLET}============================"
         echo -e "==========================================================================${NC}"
         echo
-        tmux capture-pane -pt nc_listener -S -1000 > /tmp/tmux_buffer.txt
-        cat /tmp/tmux_buffer.txt
-        > /tmp/tmux_buffer.txt  # Clear the content of the file
-        tmux send-keys -t nc_listener C-u  # Clear the input buffer in tmux
+        tmux capture-pane -pt nc_listener -S -1000
+        tmux show-buffer
+        tmux delete-buffer
+        tmux send-keys -t nc_listener C-l  # Clear the terminal
     done
 
     # Kill the tmux session after post-exploitation tasks are done
@@ -2174,6 +2174,11 @@ send_command() {
     done
 
     echo -e "${GREEN}[+] Capturing output...${NC}"
+    # Capture and clear the tmux buffer
+    tmux capture-pane -pt nc_listener -S -1000
+    tmux show-buffer
+    tmux delete-buffer
+    tmux send-keys -t nc_listener C-l  # Clear the terminal
 }
 
 check_install_dependencies() {
