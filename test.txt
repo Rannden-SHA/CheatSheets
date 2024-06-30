@@ -2138,8 +2138,10 @@ post_exploitation() {
                 26) break ;;
                 *) echo -e "${RED}Invalid option. Please try again.${NC}" ;;
             esac
-        esac
-
+        else
+            echo -e "${RED}Invalid shell type. Please enter 'l' for Linux or 'w' for Windows.${NC}"
+        fi
+        
         # Display the output from the reverse shell
         tmux capture-pane -pt nc_listener -S -1000
         tmux show-buffer
