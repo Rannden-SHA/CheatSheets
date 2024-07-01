@@ -1462,7 +1462,8 @@ web_tools_menu() {
         echo -e "1) WhatWeb scan"
         echo -e "2) Nikto scan"
         echo -e "3) Gobuster Scan"
-        echo -e "4) Back to Main Menu"
+        echo -e "4) Subdomain Scan"
+        echo -e "5) Back to Main Menu"
         read -e -p "Option: " web_tools_option
 
         clear
@@ -1533,6 +1534,11 @@ web_tools_menu() {
                 ;;
             4)
                 clear
+                show_info_panel
+                subdomain_enumeration
+                ;;
+            5)
+                clear
                 break
                 ;;
             *)
@@ -1540,6 +1546,12 @@ web_tools_menu() {
                 ;;
         esac
     done
+}
+
+subdomain_enumeration() {
+    read -e -p "Enter the domain to enumerate subdomains: " domain
+    echo -e "${YELLOW}[+] Enumerating subdomains for $domain...${NC}"
+    sublist3r -d $domain
 }
 
 # Function to download tools
@@ -2038,6 +2050,116 @@ ldap_enumeration() {
     ldapsearch -x -H ldap://$ldap_server -b "dc=example,dc=com"
 }
 
+# Function for Hydra Brute Force Attack
+brute_force_attack() {
+    read -e -p "Enter the target IP: " target_ip
+
+    echo -e "${BLUE}[+] Select the protocol to brute force:${NC}"
+    protocols=("SSH" "FTP" "SMB" "MySQL" "RDP")
+    select protocol in "${protocols[@]}"; do
+        case $protocol in
+            SSH|FTP|SMB|MySQL|RDP)
+                echo -e "${GREEN}Selected protocol: $protocol${NC}"
+                break
+                ;;
+            *)
+                echo -e "${RED}Invalid option. Please select a valid protocol.${NC}"
+                ;;
+        esac
+    done
+
+    read -e -p "Do you want to specify a username or use a user dictionary? (u/d): " user_choice
+    if [ "$user_choice" == "u" ]; then
+        read -e -p "Enter the username: " username
+    else
+        echo -e "${BLUE}[+] Select a user dictionary:${NC}"
+        user_dictionaries=("/usr/share/metasploit-framework/data/wordlists/unix_users.txt" "/usr/share/metasploit-framework/data/wordlists/common_users.txt" "Custom")
+        select user_dict in "${user_dictionaries[@]}"; do
+            case $user_dict in
+                "Custom")
+                    read -e -p "Enter the path to the user dictionary: " user_dict
+                    ;;
+                *)
+                    echo -e "${GREEN}Selected user dictionary: $user_dict${NC}"
+                    ;;
+            esac
+            break
+        done
+    fi
+
+    read -e -p "Do you want to specify a password or use a password dictionary? (p/d): " pass_choice
+    if [ "$pass_choice" == "p" ]; then
+        read -e -p "Enter the password: " password
+    else
+        echo -e "${BLUE}[+] Select a password dictionary:${NC}"
+        pass_dictionaries=("/usr/share/metasploit-framework/data/wordlists/unix_passwords.txt" "/usr/share/metasploit-framework/data/wordlists/common_passwords.txt" "/usr/share/wordlists/rockyou.txt" "Custom")
+        select pass_dict in "${pass_dictionaries[@]}"; do
+            case $pass_dict in
+                "Custom")
+                    read -e -p "Enter the path to the password dictionary: " pass_dict
+                    ;;
+                *)
+                    echo -e "${GREEN}Selected password dictionary: $pass_dict${NC}"
+                    ;;
+            esac
+            break
+        done
+    fi
+
+    read -e -p "Enter the number of threads (default is 16, recommended up to 64): " threads
+    threads=${threads:-16}
+
+    fecha=$(date +%Y%m%d_%H%M%S)
+    result_file="$BASE_DIR/loot/hydra_${protocol}_${fecha}.txt"
+
+    echo -e "${YELLOW}[+] Starting $protocol brute force attack on $target_ip...${NC}"
+
+    if [ "$user_choice" == "u" ]; then
+        if [ "$pass_choice" == "p" ]; then
+            hydra -l "$username" -p "$password" -t "$threads" -o "$result_file" "$target_ip" "$protocol"
+        else
+            hydra -l "$username" -P "$pass_dict" -t "$threads" -o "$result_file" "$target_ip" "$protocol"
+        fi
+    else
+        if [ "$pass_choice" == "p" ]; then
+            hydra -L "$user_dict" -p "$password" -t "$threads" -o "$result_file" "$target_ip" "$protocol"
+        else
+            hydra -L "$user_dict" -P "$pass_dict" -t "$threads" -o "$result_file" "$target_ip" "$protocol"
+        fi
+    fi
+
+    echo -e "${GREEN}[+] Brute force attack complete. Results saved to $result_file${NC}"
+}
+
+# Function for Port Knocking
+port_knocking() {
+    read -e -p "Enter the IP address to knock: " ip
+    read -e -p "Enter the sequence of ports (example: 3000,4000,5000): " ports
+    echo -e "${YELLOW}[+] Port knocking on $ip with ports $ports...${NC}"
+    for port in ${ports//,/ }; do
+        nc -zv $ip $port
+    done
+}
+
+# Function to generate dictionary passwords using CUPP
+generate_passwords_cupp() {
+    # Ensure CUPP is available
+    if [ ! -d "cupp" ]; then
+        echo -e "${RED}[!] CUPP directory not found. Cloning CUPP from GitHub...${NC}"
+        git clone https://github.com/Mebus/cupp.git || { echo -e "${RED}Failed to clone CUPP repository.${NC}"; return; }
+    fi
+
+    # Change to CUPP directory
+    cd cupp || { echo -e "${RED}Failed to enter CUPP directory.${NC}"; return; }
+
+    # Run CUPP with interactive mode
+    echo -e "${BLUE}[+] Running CUPP...${NC}"
+    python3 cupp.py -i
+
+    # Return to the original directory
+    cd ..
+}
+
 # Function to clean up and close the Netcat listener
 cleanup() {
     echo -e "${RED}[+] Exiting ...${NC}"
@@ -2228,17 +2350,20 @@ main_menu() {
         echo -e "2) Create directories"
         echo -e "3) NMAP scans"
         echo -e "4) Web Tools"
-        echo -e "5) OSINT Tools"
-        echo -e "6) Exploit Tools"
-        echo -e "7) CheatSheets"
-        echo -e "8) Hash Crack"
-        echo -e "9) Active Directory Tools"
-        echo -e "10) Reverse Shell Generator"
-        echo -e "11) Post-Explotation"
-        echo -e "12) Download Tools"
-        echo -e "13) Generate Report"
-        echo -e "14) Check and Install Dependencies"
-        echo -e "15) Save & Exit"
+        echo -e "5) Brute Force Attack"
+        echo -e "6) Create a Presonalized Dictionary"
+        echo -e "7) Port Knocking"
+        echo -e "8) OSINT Tools"
+        echo -e "9) Exploit Tools"
+        echo -e "10) CheatSheets"
+        echo -e "11) Hash Crack"
+        echo -e "12) Active Directory Tools"
+        echo -e "13) Reverse Shell Generator"
+        echo -e "14) Post-Explotation"
+        echo -e "15) Download Tools"
+        echo -e "16) Generate Report"
+        echo -e "17) Check and Install Dependencies"
+        echo -e "18) Save & Exit"
         read -e -p "Option: " main_option
 
         clear
@@ -2258,36 +2383,45 @@ main_menu() {
                 web_tools_menu
                 ;;
             5)
-                osint_tools_menu
+                brute_force_attack
                 ;;
             6)
-                exploit_tools_menu
+                generate_passwords_cupp
                 ;;
             7)
-                show_cheatsheets
+                port_knocking
                 ;;
             8)
-                crack_with_hashcat
+                osint_tools_menu
                 ;;
             9)
-                show_ad_tools
+                exploit_tools_menu
                 ;;
             10)
-                generate_reverse_shell
+                show_cheatsheets
                 ;;
-            11) 
-                post_exploitation
+            11)
+                crack_with_hashcat
                 ;;
             12)
-                download_tools
+                show_ad_tools
                 ;;
             13)
-                save_report
+                generate_reverse_shell
                 ;;
-            14)
-                check_install_dependencies
+            14) 
+                post_exploitation
                 ;;
             15)
+                download_tools
+                ;;
+            16)
+                save_report
+                ;;
+            17)
+                check_install_dependencies
+                ;;
+            18)
                 save_results
                 echo -e "${GREEN}[+] Exiting the script.${NC}"
                 exit 0
